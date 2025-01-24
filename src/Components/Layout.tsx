@@ -15,6 +15,7 @@ import {
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Wallet, PieChart, Receipt, Settings } from 'lucide-react';
+import { Category } from '@mui/icons-material';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -38,6 +39,7 @@ export default function Layout({ children }: LayoutProps) {
   const menuItems = [
     { text: 'Dashboard', icon: <PieChart />, path: '/dashboard' },
     { text: 'Transactions', icon: <Receipt />, path: '/transactions' },
+    { text: 'Categories', icon: <Category />, path: '/categories' },
     { text: 'Settings', icon: <Settings />, path: '/settings' }
   ];
 

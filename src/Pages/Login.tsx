@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import {
   Box,
   Card,
@@ -63,62 +63,86 @@ export default function Login() {
     }
   };
 
+  const handleTogglePassword = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
     <Box
       sx={{
-        minHeight: '100vh',
+        height: '100vh',
+        width: '100vw',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         bgcolor: 'grey.100',
-        py: 3,
-        px: 2,
+        margin: 0,
+        padding: 0,
+        overflow: 'hidden'
       }}
     >
-      <Container maxWidth="sm">
-        <Card sx={{ boxShadow: 3 }}>
-          <CardContent sx={{ p: 4 }}>
-            <Typography variant="h4" component="h1" sx={{ mb: 4, textAlign: 'center' }}>
+      <Container 
+        maxWidth="sm" 
+        sx={{
+          width: '100%',
+          mx: 'auto',
+          px: { xs: 2, sm: 3 }
+        }}
+      >
+        <Card 
+          sx={{ 
+            width: '100%',
+            boxShadow: 3,
+            borderRadius: 2,
+            bgcolor: 'background.paper'
+          }}
+        >
+          <CardContent sx={{ p: { xs: 2, sm: 4 } }}>
+            <Typography 
+              variant="h4" 
+              component="h1" 
+              sx={{ 
+                mb: 4, 
+                textAlign: 'center',
+                fontWeight: 500
+              }}
+            >
               Login
             </Typography>
 
-            {errors.submit && (
-              <Alert severity="error" sx={{ mb: 3 }}>
-                {errors.submit}
-              </Alert>
-            )}
+            <form onSubmit={handleLogin}>
+              {errors.submit && (
+                <Alert severity="error" sx={{ mb: 2 }}>
+                  {errors.submit}
+                </Alert>
+              )}
 
-            <Box component="form" onSubmit={handleLogin} noValidate>
               <TextField
                 fullWidth
-                margin="normal"
                 label="Email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 error={!!errors.email}
                 helperText={errors.email}
-                disabled={isSubmitting}
-                autoComplete="email"
-                autoFocus
+                margin="normal"
               />
 
               <TextField
                 fullWidth
-                margin="normal"
                 label="Password"
                 type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 error={!!errors.password}
                 helperText={errors.password}
-                disabled={isSubmitting}
-                autoComplete="current-password"
+                margin="normal"
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
                       <IconButton
-                        onClick={() => setShowPassword(!showPassword)}
+                        aria-label="toggle password visibility"
+                        onClick={handleTogglePassword}
                         edge="end"
                       >
                         {showPassword ? <VisibilityOff /> : <Visibility />}
@@ -129,15 +153,32 @@ export default function Login() {
               />
 
               <Button
-                type="submit"
                 fullWidth
+                type="submit"
                 variant="contained"
+                color="primary"
                 size="large"
                 disabled={isSubmitting}
                 sx={{ mt: 3, mb: 2 }}
               >
-                {isSubmitting ? 'Logging in...' : 'Login'}
+                {isSubmitting ? 'Signing in...' : 'Sign In'}
               </Button>
+            </form>
+
+            <Box sx={{ textAlign: 'center', mt: 2 }}>
+              <Typography variant="body2" color="text.secondary">
+                Don't have an account?{' '}
+                <Link 
+                  to="/signup"
+                  style={{ 
+                    color: '#2e7d32',
+                    textDecoration: 'none',
+                    fontWeight: 500
+                  }}
+                >
+                  Sign up
+                </Link>
+              </Typography>
             </Box>
           </CardContent>
         </Card>

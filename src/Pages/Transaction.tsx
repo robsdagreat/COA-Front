@@ -13,8 +13,9 @@ import {
   InputLabel, 
   Grid 
 } from '@mui/material';
-import { TransactionsAPI, CategoriesAPI } from '../Services/Api';
+import { TransactionsAPI, CategoriesAPI , AccountsAPI } from '../Services/Api';
 import { Transaction } from '../Services/Api';
+
 
 
 export default function Transactions() {
@@ -23,23 +24,25 @@ export default function Transactions() {
   const [newTransaction, setNewTransaction] = useState<Omit<Transaction, 'id'>>({
     amount: 0,
     type: 'Expense',
-    categoryId: '',
-    accountId: '',
+    categoryId: 0,
+    accountId: 0,
     date: new Date().toISOString().split('T')[0],
-});
- 
-
+  });
+  const [accounts, setAccounts] = useState([]);
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [transactionsRes, categoriesRes] = await Promise.all([
+        const [transactionsRes, categoriesRes, accountsRes] = await Promise.all([
           TransactionsAPI.getByDateRange(),
           CategoriesAPI.getAll(),
+          AccountsAPI.getAll()
         ]);
         setTransactions(transactionsRes.data);
         setCategories(categoriesRes.data);
+        setAccounts(accountsRes.data);
       } catch (error) {
-        console.error('Failed to fetch transactions:', error);
+        console.error('Failed to fetch data:', error);
       }
     };
     fetchData();
@@ -54,8 +57,8 @@ export default function Transactions() {
       setNewTransaction({
         amount: 0,
         type: 'Expense',
-        categoryId: '',
-        accountId: '',
+        categoryId: 0,
+        accountId: 0,
         date: new Date().toISOString().split('T')[0],
       });
     } catch (error) {
@@ -109,7 +112,7 @@ export default function Transactions() {
               <Select
                 value={newTransaction.categoryId}
                 onChange={(e) =>
-                  setNewTransaction({ ...newTransaction, categoryId: e.target.value })
+                  setNewTransaction({ ...newTransaction, categoryId: Number(e.target.value) })
                 }
                 label="Category"
               >
@@ -123,6 +126,20 @@ export default function Transactions() {
                 ))}
               </Select>
             </FormControl>
+            <FormControl fullWidth sx={{ mb: 2 }}>
+            <InputLabel>Account</InputLabel>
+            <Select
+              value={newTransaction.accountId}
+              onChange={(e) => setNewTransaction({ ...newTransaction, accountId: Number(e.target.value) })}
+              label="Account"
+            >
+              {accounts.map((account) => (
+                <MenuItem key={account.id} value={account.id}>
+                  {account.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
             <TextField
               fullWidth
               label="Date"
